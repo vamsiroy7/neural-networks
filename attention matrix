@@ -1,19 +1,33 @@
+import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Simplified tokens
-tokens = ["Hello", "I", "play", "games"]
+# Example sentence and vocabulary
+sentence = ["Hello", "I", "play", "games"]
+vocab = sorted(set(sentence))  # Ensure vocabulary is unique and sorted
+vocab_size = len(vocab)
 
-# Randomly initialized embeddings for each token (4 tokens, 3-dimensional vectors for simplicity)
-np.random.seed(0)
-embeddings = np.random.rand(4, 3)
+# Create a word-to-index mapping
+word_to_index = {word: index for index, word in enumerate(vocab)}
 
-# Compute Q (Query), K (Key), V (Value) by applying a linear transformation
-# For simplicity, we'll assume Q, K, and V are the same in this example
-Q = embeddings
-K = embeddings
-V = embeddings
+# Convert the sentence to indices
+sentence_indices = [word_to_index[word] for word in sentence]
+
+# Define the embedding layer (this acts like a Word2Vec model)
+embedding_dim = 4  # Size of the embedding vector
+embedding_layer = tf.keras.layers.Embedding(input_dim=vocab_size, output_dim=embedding_dim)
+
+# Get the embeddings for the sentence
+sentence_embeddings = embedding_layer(tf.constant(sentence_indices))
+
+# Convert embeddings to numpy array for further processing
+sentence_embeddings = sentence_embeddings.numpy()
+
+# Compute Q (Query), K (Key), V (Value)
+Q = sentence_embeddings
+K = sentence_embeddings
+V = sentence_embeddings
 
 # Calculate the attention scores by computing the dot product of Q and K (transpose)
 attention_scores = np.dot(Q, K.T)
@@ -25,6 +39,6 @@ def softmax(x):
 attention_weights = softmax(attention_scores)
 
 # Generate the self-attention matrix visualization
-sns.heatmap(attention_weights, annot=True, cmap='coolwarm', xticklabels=tokens, yticklabels=tokens)
+sns.heatmap(attention_weights, annot=True, cmap='coolwarm', xticklabels=sentence, yticklabels=sentence)
 plt.title("Self-Attention Matrix for 'Hello, I play games'")
 plt.show()
