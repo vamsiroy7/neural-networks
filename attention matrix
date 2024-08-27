@@ -1,0 +1,30 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Simplified tokens
+tokens = ["Hello", "I", "play", "games"]
+
+# Randomly initialized embeddings for each token (4 tokens, 3-dimensional vectors for simplicity)
+np.random.seed(0)
+embeddings = np.random.rand(4, 3)
+
+# Compute Q (Query), K (Key), V (Value) by applying a linear transformation
+# For simplicity, we'll assume Q, K, and V are the same in this example
+Q = embeddings
+K = embeddings
+V = embeddings
+
+# Calculate the attention scores by computing the dot product of Q and K (transpose)
+attention_scores = np.dot(Q, K.T)
+
+# Apply softmax to the attention scores to get attention weights
+def softmax(x):
+    return np.exp(x) / np.sum(np.exp(x), axis=-1, keepdims=True)
+
+attention_weights = softmax(attention_scores)
+
+# Generate the self-attention matrix visualization
+sns.heatmap(attention_weights, annot=True, cmap='coolwarm', xticklabels=tokens, yticklabels=tokens)
+plt.title("Self-Attention Matrix for 'Hello, I play games'")
+plt.show()
